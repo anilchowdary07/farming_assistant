@@ -1,0 +1,118 @@
+@startuml
+!theme plain
+skinparam backgroundColor #F8F9FA
+skinparam classAttributeIconSize 0
+
+title AI Crop Advisory System - Data Models
+
+class LocationData {
+  + lat: float
+  + lon: float
+  + name: string
+}
+
+class RecommendationRequest {
+  + location: LocationData
+  + season: string
+  + budget: int
+  + land_size: float
+  + land_unit: string
+  + harvest_timeline: string
+  + soil_type: string
+  + irrigation: string
+  --
+  + validate()
+}
+
+class WeatherData {
+  + temp: float
+  + humidity: int
+  + rainfall: string
+  + forecast: string
+  + wind_speed: float
+  + description: string
+  --
+  + from_api_response()
+}
+
+class UIHints {
+  + gradient: list[string]
+  + icon_color: string
+  + risk_badge: string
+}
+
+class CropRecommendation {
+  + name: string
+  + emoji: string
+  + reason: string
+  + investment: int
+  + profit_range: string
+  + roi_percentage: int
+  + risk_level: string
+  + harvest_time: string
+  + water_requirement: string
+  + steps: list[string]
+  + risks: list[string]
+  + confidence_score: float
+  + ui_hints: UIHints
+}
+
+class MarketInsights {
+  + trending_crops: list[string]
+  + price_trends: string
+  + regional_demand: string
+}
+
+class RecommendationResponse {
+  + weather: WeatherData
+  + recommendations: list[CropRecommendation]
+  + market_insights: MarketInsights
+  + timestamp: string
+  --
+  + to_json()
+}
+
+' Relationships
+RecommendationRequest *-- LocationData : contains
+RecommendationResponse *-- WeatherData : contains
+RecommendationResponse *-- "3" CropRecommendation : contains
+RecommendationResponse *-- MarketInsights : contains
+CropRecommendation *-- UIHints : contains
+
+' Services
+class WeatherService {
+  + api_key: string
+  --
+  + get_weather(lat, lon): WeatherData
+  + get_forecast(lat, lon): dict
+  + fetch_from_cache(location): WeatherData
+}
+
+class GeminiService {
+  + api_key: string
+  + model: string
+  --
+  + get_recommendations(request): list[CropRecommendation]
+  + build_prompt(weather, params): string
+  + parse_ai_response(response): list[CropRecommendation]
+  + get_fallback_recommendations(): list[CropRecommendation]
+}
+
+WeatherService ..> WeatherData : creates
+GeminiService ..> CropRecommendation : creates
+
+note right of RecommendationRequest
+  Pydantic model for
+  request validation
+end note
+
+note right of CropRecommendation
+  Each recommendation includes:
+  - Financial analysis (investment, profit, ROI)
+  - Risk assessment (low/medium/high)
+  - Cultivation guide (4-8 steps)
+  - Potential risks (3+ items)
+  - UI styling hints
+end note
+
+@enduml

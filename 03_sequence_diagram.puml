@@ -1,0 +1,101 @@
+@startuml
+!theme plain
+skinparam backgroundColor #F8F9FA
+
+title AI Crop Advisory System - Recommendation Sequence
+
+actor "Farmer" as farmer
+participant "React UI\n(Form)" as UI
+participant "API Client" as API
+participant "Flask API" as Flask
+participant "Pydantic\nValidator" as Valid
+participant "Weather\nService" as Weather
+participant "OpenWeatherMap" as OWM
+participant "Gemini AI\nService" as Gemini
+participant "Google Gemini" as GeminiAPI
+participant "Logger" as Log
+
+== Form Submission ==
+farmer -> UI: Fill multi-step form
+activate UI
+UI -> UI: Validate input locally
+UI -> API: Submit form data
+activate API
+API -> API: Show loading animation
+API -> Flask: POST /api/recommend\n{location, season, budget,\nland_size, soil_type, irrigation}
+activate Flask
+
+== Request Validation ==
+Flask -> Log: Log incoming request
+Flask -> Valid: Validate request body
+activate Valid
+Valid -> Valid: Check required fields
+Valid -> Valid: Validate data types
+Valid --> Flask: Validated data
+deactivate Valid
+
+== Weather Data Fetch ==
+Flask -> Weather: get_weather(lat, lon)
+activate Weather
+Weather -> OWM: GET current weather
+activate OWM
+OWM --> Weather: {temp, humidity, wind, rain}
+deactivate OWM
+Weather -> OWM: GET 5-day forecast
+activate OWM
+OWM --> Weather: {forecast_data}
+deactivate OWM
+Weather -> Weather: Process & summarize
+Weather --> Flask: weather_summary
+deactivate Weather
+
+== AI Recommendation ==
+Flask -> Gemini: get_recommendations(\nweather, location, season,\nbudget, land, soil, irrigation)
+activate Gemini
+Gemini -> Gemini: Build structured prompt
+Gemini -> GeminiAPI: Generate content
+activate GeminiAPI
+note right
+  AI analyzes:
+  - Weather conditions
+  - Soil compatibility
+  - Budget constraints
+  - Irrigation availability
+  - Seasonal suitability
+  - Market trends
+end note
+GeminiAPI --> Gemini: AI response (JSON)
+deactivate GeminiAPI
+Gemini -> Gemini: Parse JSON response
+Gemini -> Gemini: Validate crop structure
+Gemini -> Gemini: Add UI hints (colors, gradients)
+Gemini --> Flask: 3 crop recommendations
+deactivate Gemini
+
+== Response Building ==
+Flask -> Flask: Build response JSON:\n- weather\n- recommendations (3 crops)\n- market_insights\n- timestamp
+Flask -> Log: Log successful response
+
+Flask --> API: 200 OK\n{weather, recommendations, market_insights}
+deactivate Flask
+
+== UI Update ==
+API -> API: Hide loading animation
+API -> UI: Update state with data
+deactivate API
+UI -> UI: Render weather summary
+UI -> UI: Render crop cards with animations
+UI -> UI: Render market insights
+UI --> farmer: Display recommendations
+deactivate UI
+
+== User Interaction ==
+farmer -> UI: Expand crop card
+activate UI
+UI -> UI: Animate expansion
+UI -> UI: Show cultivation steps
+UI -> UI: Show risk assessment
+UI --> farmer: Detailed information
+deactivate UI
+
+@enduml
