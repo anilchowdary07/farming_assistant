@@ -9,25 +9,17 @@ BACKEND_DIR = os.path.join(BASE_DIR, "backend")
 if BACKEND_DIR not in sys.path:
     sys.path.insert(0, BACKEND_DIR)
 
-# Set environment variables if not present (for local testing)
-if not os.getenv('GEMINI_API_KEY'):
-    print("WARNING: GEMINI_API_KEY not set")
-if not os.getenv('OPENWEATHER_API_KEY'):
-    print("WARNING: OPENWEATHER_API_KEY not set")
+# Import Flask first for fallback
+from flask import Flask, jsonify
 
 try:
-    from app import app
-    
-    # Export for Vercel (these are all valid names Vercel looks for)
-    application = app
-    handler = app
-    
+    from app import app as flask_app
+    app = flask_app
 except Exception as e:
     print(f"Error importing app: {e}")
     import traceback
     traceback.print_exc()
     # Create a simple Flask app for error reporting
-    from flask import Flask, jsonify
     app = Flask(__name__)
     
     @app.route('/health', methods=['GET'])
@@ -36,15 +28,17 @@ except Exception as e:
         return jsonify({
             'status': 'error',
             'error': str(e),
-            'message': 'Failed to initialize application'
+            'message': 'Failed to initialize application. Check GEMINI_API_KEY is set.'
         }), 500
     
     @app.route('/api/recommend', methods=['POST'])
     def recommend():
         return jsonify({
             'error': 'Application initialization failed',
-            'details': str(e)
+            'details': str(e),
+            'hint': 'Ensure GEMINI_API_KEY environment variable is set in Vercel'
         }), 500
-    
-    application = app
-    handler = app
+
+# Export all possible names that Vercel might look for
+application = app
+handler = app
