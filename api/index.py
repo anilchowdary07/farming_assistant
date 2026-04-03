@@ -17,6 +17,11 @@ if not os.getenv('OPENWEATHER_API_KEY'):
 
 try:
     from app import app
+    
+    # Export for Vercel (these are all valid names Vercel looks for)
+    application = app
+    handler = app
+    
 except Exception as e:
     print(f"Error importing app: {e}")
     import traceback
@@ -40,6 +45,6 @@ except Exception as e:
             'error': 'Application initialization failed',
             'details': str(e)
         }), 500
-
-# Export for Vercel
-handler = app
+    
+    application = app
+    handler = app

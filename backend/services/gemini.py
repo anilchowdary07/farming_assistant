@@ -18,7 +18,7 @@ class GeminiService:
         
         genai.configure(api_key=self.api_key)
         # Use gemini-1.5-flash for faster responses (gemini-pro was deprecated)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
     
     def get_crop_recommendations(
         self, 
