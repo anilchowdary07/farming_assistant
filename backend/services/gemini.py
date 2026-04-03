@@ -124,17 +124,19 @@ Return ONLY valid JSON with this exact structure:
       "harvest_time": "120 days",
       "water_requirement": "high/medium/low",
       "steps": [
-        "Land preparation: Plow and level the field, apply farmyard manure",
-        "Sowing: Use 20-25 kg seeds per acre, maintain 20cm row spacing",
-        "Irrigation: Water every 7-10 days, ensure proper drainage",
-        "Fertilization: Apply NPK fertilizers at specific growth stages",
-        "Pest management: Monitor for common pests, use IPM practices",
-        "Harvesting: Harvest when 80% grains turn golden yellow"
+        "Week 1: Land preparation - Deep plowing 2-3 times, level field, apply 8-10 tonnes FYM per acre",
+        "Week 2: Sowing - Use 20-25 kg certified seeds per acre, treat seeds with Carbendazim 2g/kg, maintain 20x10cm spacing",
+        "Week 3-8: Irrigation - Water immediately after sowing, maintain 2-3 inch water level, drain before fertilizer application",
+        "Week 4: First fertilization - Apply 50kg Urea + 100kg DAP + 25kg MOP per acre at tillering stage",
+        "Week 8: Second fertilization - Apply 50kg Urea per acre at panicle initiation stage",
+        "Week 6-12: Pest control - Monitor for stem borer, apply Chlorantraniliprole 0.4ml/L if needed, use pheromone traps",
+        "Week 12: Pre-harvest - Stop irrigation 10 days before harvest",
+        "Week 16-18: Harvesting - When 80% grains turn golden, moisture 20-25%, use combine harvester or manual sickle"
       ],
       "risks": [
-        "Pest attack (stem borer, leaf folder) - use neem-based pesticides",
-        "Fungal diseases in high humidity - ensure proper field drainage",
-        "Price fluctuation - sell at MSP or wait for better market rates"
+        "Stem borer and leaf folder attack (peak: Week 6-10) - Use Chlorantraniliprole 18.5 SC @ 0.3ml/L, install pheromone traps 8-10 per acre",
+        "Blast disease in humid conditions - Spray Tricyclazole 75% WP @ 0.6g/L at tillering and panicle stages, ensure field drainage",
+        "Market price volatility - Government MSP ₹2,183/quintal (2024), consider FCI procurement or contract farming for guaranteed price"
       ],
       "confidence_score": 0.92,
       "ui_hints": {{
@@ -157,12 +159,16 @@ Return ONLY valid JSON with this exact structure:
 **IMPORTANT:**
 - Return ONLY the JSON object, no markdown, no explanations
 - All 3 crops must be DIFFERENT and suitable for the conditions
-- Steps array must have at least 4-6 detailed actionable items
-- Risks array must have at least 2-3 specific risks with mitigation
+- Steps array must have 6-8 DETAILED, TIMELINE-BASED steps with SPECIFIC quantities and inputs
+- Each step MUST include timing (Week/Day/Month), specific fertilizer/pesticide names, dosages, and application methods
+- Example: "Week 4: Apply 50kg Urea + 100kg DAP per acre" NOT "Apply fertilizers"
+- Include SPECIFIC pesticide names (e.g., "Chlorantraniliprole 18.5 SC @ 0.3ml/L") NOT generic "pesticides"
+- Risks array must have 3-4 SPECIFIC risks with EXACT mitigation strategies including product names and dosages
 - Investment and profit must be realistic for {land_size} {land_unit}
 - Confidence score should reflect certainty based on available data
+- Each crop MUST have UNIQUE cultivation steps specific to that crop variety
 
-Generate the recommendations now:"""
+Generate the recommendations now with MAXIMUM DETAIL and SPECIFICITY:"""
 
     def _extract_json(self, text: str) -> Dict:
         """Extract JSON from Gemini response"""
