@@ -238,8 +238,8 @@ Crop 3: 🌸 Cotton (Bt Hybrid)
 ```bash
 # Connect GitHub repo to Railway
 # Add environment variables:
-#   - GEMINI_API_KEY=AIzaSyDhWFx-ospVAw0e91IHY8A2bb92wbDbv2A
-#   - OPENWEATHER_API_KEY=your_key_here
+#   - GEMINI_API_KEY=your_gemini_api_key_here
+#   - OPENWEATHER_API_KEY=your_openweather_api_key_here
 # Railway auto-detects Python and deploys
 ```
 
