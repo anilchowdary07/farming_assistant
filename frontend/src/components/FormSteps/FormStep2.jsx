@@ -116,7 +116,7 @@ const FormStep2 = ({ formData, setFormData, onNext, onBack }) => {
             onChange={(e) => setFormData(prev => ({ ...prev, land_size: parseFloat(e.target.value) || 0 }))}
             placeholder="Custom size"
             min="0.1"
-            step="0.5"
+            step="0.1"
             className="input-field flex-1"
           />
           <select
